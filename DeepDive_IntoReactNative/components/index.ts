@@ -1,0 +1,5 @@
+export {MainButton} from './buttons/MainButton'
+export {Title} from './Title'
+export {SystemNumberGuessed} from './SystemNumberGuessed'
+export {Card} from './ui/Card'
+export {InstructionText} from './ui/InstructionText'

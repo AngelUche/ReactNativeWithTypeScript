@@ -69,7 +69,7 @@ export function GameScreen({userNumber, openGameOverscreen}:GameScreenProps){
       <Title>Oponent's Guess</Title>
       <SystemNumberGuessed>{systemNumber}</SystemNumberGuessed>
       <Card>
-        <InstructionText>Higher or lower?</InstructionText>
+        <InstructionText>Higher or lower? </InstructionText>
         <View  style={styles.PressableButtonContainer}>
           <View style={styles.presseableButton}>
             <MainButton pressedButton={()=>generateNewRandonNumber( 'lower')}>-</MainButton>
@@ -97,6 +97,7 @@ const styles= StyleSheet.create({
 
   GameScreen:{
     flex: 1,
+    alignItems: 'center',
     padding:12,
     marginTop:50,
   },

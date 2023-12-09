@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet,Dimensions} from 'react-native'
 import {ReactNode} from 'react'
 import { Colors } from '../constants/Colors';
 
@@ -12,6 +12,8 @@ export function SystemNumberGuessed({children}:Props){
     </View>
   )
 }
+const Screenwidth =Dimensions.get("window").width
+
 const style= StyleSheet.create({
   NumberContainer:{
     borderWidth:2,
@@ -25,6 +27,6 @@ const style= StyleSheet.create({
   NmberText:{
     color:Colors.primaryYellow500,
     fontWeight:"bold",
-    fontSize:38,
+    fontSize:Screenwidth<50? 28:38,
   }
 });

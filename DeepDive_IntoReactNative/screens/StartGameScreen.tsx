@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MainButton, Card, InstructionText } from '../components';
-import { View, TextInput,StyleSheet, Alert} from 'react-native';
+import { View, TextInput,StyleSheet, Alert, useWindowDimensions, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { Colors } from '../constants/Colors';
 import { Title } from '../components';
 
@@ -11,6 +11,9 @@ interface startScreenPops{
 export const StartGameScreen=({onUserPicked}:startScreenPops)=>{
 
   const [enteredNumber, setEnteredNumber] =useState<string>("")
+
+  // getting the window height
+  const {height} =useWindowDimensions()
 
   function inputHandler(numberValue:any){
     setEnteredNumber(numberValue)
@@ -29,44 +32,53 @@ export const StartGameScreen=({onUserPicked}:startScreenPops)=>{
     setEnteredNumber("")
   }
 
+  // maigin windows height calculation
+   const MarginToTop= height<380? 50:120
 
   return(
-    <View style={styles.mainRootContainer}>
-        {/* guess a number  */}
-      <Title>Guess My Number</Title>
-      {/* card container */}
-      <Card>
-        {/* instruction container */}
-        <InstructionText >guess a number n</InstructionText>
+    <ScrollView style={styles.screen}>
+      <KeyboardAvoidingView style={styles.screen} behavior='position' >
+        <View style={[styles.mainRootContainer, {marginTop:MarginToTop}]}>
+            {/* guess a number  */}
+          <Title>Guess My Number</Title>
+          {/* card container */}
+          <Card>
+            {/* instruction container */}
+            <InstructionText >guess a number n</InstructionText>
 
-        {/* text input container to collect user input */}
-        <TextInput style={styles.InputContainer} 
-        onChangeText={inputHandler}
-        value={enteredNumber}
-        maxLength={2} 
-        keyboardType='numeric' 
-        inputMode='numeric' 
-        keyboardAppearance='default'
-        />
-        <View style={styles.PressableButtonContainer}> 
-          <View style={styles.presseableButton}>
-            <MainButton pressedButton={ResetInput}>Reset</MainButton>
-          </View >
-          <View style={styles.presseableButton}>
-            <MainButton pressedButton={ConfirmButtonHandler}>Confirm</MainButton>
-          </View>
+            {/* text input container to collect user input */}
+            <TextInput style={styles.InputContainer} 
+            onChangeText={inputHandler}
+            value={enteredNumber}
+            maxLength={2} 
+            keyboardType='numeric' 
+            inputMode='numeric' 
+            keyboardAppearance='default'
+            />
+            <View style={styles.PressableButtonContainer}> 
+              <View style={styles.presseableButton}>
+                <MainButton pressedButton={ResetInput}>Reset</MainButton>
+              </View >
+              <View style={styles.presseableButton}>
+                <MainButton pressedButton={ConfirmButtonHandler}>Confirm</MainButton>
+              </View>
+            </View>
+          </Card>
         </View>
-      </Card>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
 
   )
 }
 
 const styles = StyleSheet.create({
+  screen:{
+    flex:1,
+  },
   mainRootContainer:{
     flex: 1,
     alignItems: 'center',
-    marginTop:120
+    // marginTop:120
   },
     PressableButtonContainer:{
       flexDirection: 'row',

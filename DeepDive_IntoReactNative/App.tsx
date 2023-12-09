@@ -4,6 +4,7 @@ import { StartGameScreen, GameScreen,GameOverScreen } from './screens';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Colors } from './constants/Colors';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
 
@@ -46,11 +47,14 @@ export default function App() {
   }
 
   return (
+    <>
+    <StatusBar style='light'/>
     <LinearGradient style={styles.MainScreen} colors={[Colors.primaryPurple600,Colors.primaryYellow600]}>
       <ImageBackground source={require('./assets/Nature.jpg')} style={styles.MainScreen} imageStyle={styles.ImagckBackground}>
         <SafeAreaView style={styles.MainScreen}>{ ScreenToShow}</SafeAreaView>
       </ImageBackground>
     </LinearGradient>
+    </>
   );
 }
 

@@ -67,7 +67,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
-              animation: "slide_from_left",
+            animation: "slide_from_left",
             headerStyle: { backgroundColor: "#24231f" },
             contentStyle:{backgroundColor:"#403e39", },
             headerTintColor: "white",

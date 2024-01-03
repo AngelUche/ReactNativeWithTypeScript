@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { uid } from 'uid';
 // Import the RootState type if needed in your application
 // import type { RootState } from '../../app/store';
 
@@ -24,21 +23,7 @@ interface RootState {
 
 // Initial state for the expenses slice
 const initialState: ExpensesState = {
-  expenses: [
-      
-    {
-      id: uid(),
-      amount: 99.86,
-      description: "my phone",
-      date: new Date('2022-01-05'),
-    },
-    {
-      id: uid(),
-      amount: 9.99,
-      description: "my phone",
-      date: new Date('2022-01-09'),
-    },
-  ],
+  expenses: [],
 };
 
 // Create the expenses slice using createSlice
@@ -61,11 +46,18 @@ export const expensesSlice = createSlice({
         state.expenses[index] = action.payload;
       }
     },
+    setExpenses:(state, action:PayloadAction<ExpenseInterface[]>)=>{
+      console.log(action.payload);
+      if(action.payload){
+        state.expenses=action.payload.reverse()
+      }
+    },
+   
   },
 });
 
 // Extract the action creators
-export const { addExpense, updateExpense, deleteExpense } = expensesSlice.actions;
+export const { addExpense, updateExpense, deleteExpense, setExpenses } = expensesSlice.actions;
 
 // Selector to retrieve the expenses from the state
 export const selectExpenses = (state: RootState) => state.expenses.expenses;

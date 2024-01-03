@@ -1,11 +1,18 @@
 import { ExpensesOutput } from '../components/expensesOutput'
-import { useAppSelector } from '../app/typedHook'
+import { useAppDispatch, useAppSelector } from '../app/typedHook'
 import { getDateMinusDays } from '../utils/date'
 import { StyleSheet, Text, View } from 'react-native'
 import { GlobalStyles } from '../constants/styles'
+import { setExpenses } from '../app/expenses/expensesSlice'
+import { useEffect, useState } from 'react'
+import { fetchExpenseData } from '../app/https'
+import { LoadingOverlay } from '../components/ui/LoadingOverlay'
 
 export const RecentExpense = () => {
   const {expenses} = useAppSelector(state=>state.expeses)
+ const dispatch =useAppDispatch()
+  const [isFetching, setIsfeFching] = useState<boolean>(true)
+
 
   const recentExpenses=expenses.filter((expenses)=>{
     // initializing new date
@@ -16,6 +23,21 @@ export const RecentExpense = () => {
     
   })
   
+  
+ useEffect(()=>{
+  async function fetchData(){
+      setIsfeFching(true)
+      const data= await  fetchExpenseData();
+      setIsfeFching(false)
+
+      dispatch(setExpenses(data))
+  }
+    fetchData()
+ },[])
+
+ if(isFetching){
+   return<LoadingOverlay/>
+ }
   if(recentExpenses.length===0){
     return(
       <View style={styles.container}>

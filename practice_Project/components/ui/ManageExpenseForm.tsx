@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useState } from "react";
-import { uid } from "uid";
+// import { uid } from "uid";
 
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -11,6 +11,7 @@ import { getFormattedDate } from "../../utils/date";
 interface FormProps{
   amount:string,
   description:string
+  id:string
 }
 
 interface mangeExpenseForm{
@@ -19,12 +20,14 @@ interface mangeExpenseForm{
   isEditing:boolean,
   editedExpenses:string
   selectedDeafultValues:ExpenseInterface |undefined
+  editedExpensesId:string
 }
-export const ManageExpenseForm = ({cancelHandler, isEditing , onSubmit, editedExpenses,selectedDeafultValues}:mangeExpenseForm) => {
+export const ManageExpenseForm = ({cancelHandler, isEditing , onSubmit,editedExpensesId, editedExpenses,selectedDeafultValues}:mangeExpenseForm) => {
 
   const [formData, setFormData] = useState<FormProps>({
     amount: selectedDeafultValues?selectedDeafultValues.amount.toString():"",
     description: selectedDeafultValues?selectedDeafultValues.description:"",
+    id:editedExpensesId
   });
   // const [date, setDate] =useState(selectedDeafultValues?selectedDeafultValues.date.toISOString().slice(0,10) :"")
   const [date, setDate] =useState(selectedDeafultValues?getFormattedDate(selectedDeafultValues.date) :"")
@@ -65,7 +68,7 @@ export const ManageExpenseForm = ({cancelHandler, isEditing , onSubmit, editedEx
 
  function handleSubmit(){
   const newExpense = {
-    id: isEditing ? editedExpenses: uid(),
+    id: isEditing ? editedExpenses: editedExpensesId,
     amount: Number(formData.amount),
     description: formData.description,
     date: new Date(date),

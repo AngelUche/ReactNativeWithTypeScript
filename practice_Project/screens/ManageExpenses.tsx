@@ -1,8 +1,9 @@
 import { NavigationProp, RouteProp } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useLayoutEffect } from "react";
-import { uid } from "uid";
+// import { uid } from "uid";
+import { deleteExpenseHttp, updateExpenseHttp } from "../app/https";
 
 import { RootStackParamList } from "../constants/types/RootParams";
 import { IconButton } from "../components/ui";
@@ -10,7 +11,10 @@ import { GlobalStyles } from "../constants/styles";
 import { addExpense, deleteExpense, updateExpense } from "../app/expenses/expensesSlice";
 import { useAppDispatch, useAppSelector } from "../app/typedHook";
 import { ManageExpenseForm } from "../components/ui/ManageExpenseForm";
-import { useSendExpensesMutation, useGetExpensesQuery } from "../app/Expenses";
+// import { useSendExpensesMutation, useGetExpensesQuery } from "../app/Expenses";
+import { sendExpenseRequest } from "../app/https";
+import { useSendExpensesMutation } from "../app/Expenses";
+import { LoadingOverlay } from "../components/ui/LoadingOverlay";
 
 
 type ManageExpensesScreenRouteProp = RouteProp<RootStackParamList, "ManageExpenses">;
@@ -24,25 +28,17 @@ interface ManageExpensesProps {
 export const ManageExpenses: React.FC<ManageExpensesProps> = ({ route, navigation }) => {
   const dispatch =useAppDispatch()
   const {expenses}=useAppSelector((state)=>state.expeses)
-  const {currentData, data} =useGetExpensesQuery()
-  // console.log(data);
-  console.log(currentData);
 
-  if (currentData) {
-    const values = Array.isArray(currentData) ? currentData : Object.values(currentData);
-    console.log(Array.isArray(values));
-    
-    
-  } else {
-    console.log('Data is undefined.');
-  }
-  
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  // const [sendExpenses, {isLoading}]=useSendExpensesMutation()
+
 
   const editedExpensesId = route.params?.expenseId;
   const isEditing=!!editedExpensesId
 
+  
   // getting the endPoint to send data to the firebase
-  const [SendExpenses, {isLoading}]= useSendExpensesMutation()
 
   const selectedDeafultValues=expenses.find((expenses)=>expenses.id===editedExpensesId)
 
@@ -56,8 +52,11 @@ export const ManageExpenses: React.FC<ManageExpensesProps> = ({ route, navigatio
 
 
     // this deletes the expenses if a user wants to delete any expense
-  function deleteExpenses(){
-      dispatch(deleteExpense(editedExpensesId))
+  async function deleteExpenses(){
+    // setIsLoading(true)
+     await deleteExpenseHttp(editedExpensesId)
+     setIsLoading(false)
+    dispatch(deleteExpense(editedExpensesId))
     navigation.goBack()
   }
 
@@ -67,22 +66,32 @@ export const ManageExpenses: React.FC<ManageExpensesProps> = ({ route, navigatio
   }
 
   // @ts-ignore function that confirms either a user update or add a new expense
-  function confirmHandler(newExpense) {
   
+  async function confirmHandler(newExpense) {
+  
+    setIsLoading(true)
     if (isEditing) {
+     await updateExpenseHttp(editedExpensesId, newExpense)
       dispatch(updateExpense(newExpense));
+
+
     } else {
-      SendExpenses(newExpense)
-      dispatch(addExpense(newExpense));
+      // const id = sendExpenses(newExpense)
+      const id  = await sendExpenseRequest(newExpense)
+     dispatch(addExpense({...newExpense, id:id}));
     }
+    setIsLoading(false)
     navigation.goBack();
   }
   
+  if(isLoading){
+    return <LoadingOverlay/>
+  }
   
 
   return (
    <View style={styles.container}>
-      <ManageExpenseForm isEditing={isEditing} cancelHandler={cancelHandler} editedExpenses={editedExpensesId} onSubmit={confirmHandler} selectedDeafultValues={selectedDeafultValues}/>
+      <ManageExpenseForm isEditing={isEditing} cancelHandler={cancelHandler} editedExpenses={editedExpensesId} editedExpensesId={editedExpensesId} onSubmit={confirmHandler} selectedDeafultValues={selectedDeafultValues}/>
     {/* buttpon container */}
    
     {/* conditionally rendering an icon */}

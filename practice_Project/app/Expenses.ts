@@ -1,6 +1,6 @@
 import { emptySplitApi, } from "./api";
 import { ExpenseInterface } from "./expenses/expensesSlice";
-import { FetchBaseQueryMeta } from "@reduxjs/toolkit/query";
+// import { updateExpensestype } from "../constants/types/RootParams";
 
 export const UserExpenses = emptySplitApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,27 +12,21 @@ export const UserExpenses = emptySplitApi.injectEndpoints({
       }),
       invalidatesTags: ["Expenses"],
     }),
+
     getExpenses: builder.query<ExpenseInterface[], void>({
       query: () => ({
         url: `expenses.json`,
-
-
       }),
-      // transformResponse: (
-      //   response: ExpenseInterface[],
-      //   meta?: FetchBaseQueryMeta
-      //   ) => {
-      //     console.log('Transforming response...');
-
-
-      // // Transformation logic: Convert the response object into an array
-      // const transformedData: ExpenseInterface[] = Object.values(response);
-      // console.log('Type of transformedData:', Array.isArray(transformedData) ? 'Array' : 'Not an Array');
-
-
-      //   return transformedData;
-      //   } 
     }),
+
+    // updateExpenses: builder.mutation<updateExpensestype, ExpenseInterface>({
+    //   query: ({id, credentials}) => ({
+    //     url: `expenses/${id}.json`,
+    //     method: 'POST',
+    //     body: credentials
+    //   }),
+    //   invalidatesTags: ["Expenses"],
+    // }),
   }),
 });
 
